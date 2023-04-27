@@ -17,6 +17,7 @@ import torch.nn.functional as F
 import torchvision
 from torchvision import transforms
 import torch.optim as optim
+from livelossplot import PlotLosses
 
 
 # In[8]:
@@ -374,8 +375,13 @@ optimizer = torch.optim.Adam(vit.parameters(),lr=0.0001)
 
 
 # In[ ]:
+train_acc = []
+test_acc = []
+train_loss = []
+test_loss = []
 
 
+print(type(test_acc))
 epochs = 10
 for epoch in range(0, epochs):
     epoch_train_loss = 0
@@ -411,7 +417,43 @@ for epoch in range(0, epochs):
             epoch_test_loss += loss.item()/len(test_loader)
             test_acc = (outputs.argmax(dim=1) == labels).float().mean()
             epoch_test_acc += test_acc/len(test_loader)
+    '''
+     = epoch_test_acc.tolist()
+    print(a)
+    print(epoch_train_acc)
+    print(type(epoch_train_acc))
+    print(epoch_test_loss)
+    print(type(epoch_train_loss))
+    print(epoch_train_acc.shape)
+    '''
 
     print(f'Epoch {epoch+1} : train acc. {epoch_train_acc:.2f} train loss {epoch_train_loss:.2f}')
     print(f'Epoch {epoch+1} : test acc. {epoch_test_acc:.2f} test loss {epoch_test_loss:.2f}')
 
+
+    a = epoch_train_acc.tolist()
+    b = epoch_test_acc.tolist()
+
+    print(b)
+    print(type(b))
+    train_acc.append(a)
+    #test_acc.append(b)
+    train_loss.append(epoch_train_loss)
+    test_loss.append(epoch_test_loss)
+
+liveloss = Plotlosses()
+for n in range(epochs):
+    logs = {}
+    logs["train_loss"]= train_loss[n]
+    logs["test_loss"] = test_loss[n]
+
+    liveloss.update(logs)
+    liveloss.send()
+
+for n in range(epochs):
+    logs = {}
+    logs["train_acc"] = train_acc[n]
+    logs["test_acc"] = test_acc[n]
+
+    liveloss.update(logs)
+    liveloss.send()
