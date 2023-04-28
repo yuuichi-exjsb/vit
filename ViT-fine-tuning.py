@@ -367,8 +367,6 @@ batch_size, channel, height, width= 1024, 3, 32, 32
 vit = Vit(in_channels=channel, num_classes=num_classes) 
 vit.to(device)
 
-
-# In[ ]:
 def init_weights(m: nn.Module):
     for name, param in m.named_parameters():
         if 'weight' in name:
@@ -380,16 +378,19 @@ def init_weights(m: nn.Module):
 vit.apply(init_weights)
 
 
+# In[ ]:
+
+
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(vit.parameters(),lr=0.0001)
 #optimizer = optim.SGD(vit.parameters(), lr=0.01, momentum=0.9)
-
 def count_parameters(model: nn.Module):
     return sum(p.numel() for p in vit.parameters() if p.requires_grad)
 
 
 print(f'The model has {count_parameters(vit):,} trainable parameters')
 
+vit.load_state_dict(torch.load("./ViT_pre-trained.pth")) # 保存したモデルをロード
 
 # In[ ]:
 train_acc = []
@@ -442,9 +443,11 @@ for epoch in range(0, epochs):
     train_loss.append(epoch_train_loss)
     test_loss.append(epoch_test_loss)
 
+    
     if test_loss < best_valid_loss:
         best_valid_loss = test_loss
-        torch.save(vit.state_dict(), 'ViT_pre-trained.pth')
+        torch.save(vit.state_dict(), 'ViT_fine-tuning.pth')
+    
 
 liveloss = PlotLosses()
 for n in range(epochs):
