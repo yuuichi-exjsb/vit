@@ -444,11 +444,11 @@ for epoch in range(0, epochs):
     test_loss.append(epoch_test_loss)
 
     
-    if test_loss < best_valid_loss:
-        best_valid_loss = test_loss
+    if epoch_test_loss < best_test_loss:
+        best_test_loss = epoch_test_loss
         torch.save(vit.state_dict(), 'ViT_fine-tuning.pth')
     
-
+"""
 liveloss = PlotLosses()
 for n in range(epochs):
     logs = {}
@@ -465,3 +465,4 @@ for n in range(epochs):
 
     liveloss.update(logs)
     liveloss.send()
+"""
