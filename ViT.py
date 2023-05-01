@@ -398,7 +398,7 @@ train_loss = []
 test_loss = []
 best_test_loss = float('inf')
 
-epochs = 10
+epochs = 50
 for epoch in range(0, epochs):
     epoch_train_loss = 0
     epoch_train_acc = 0
@@ -442,10 +442,11 @@ for epoch in range(0, epochs):
     train_loss.append(epoch_train_loss)
     test_loss.append(epoch_test_loss)
 
-    if test_loss < best_valid_loss:
-        best_valid_loss = test_loss
-        torch.save(vit.state_dict(), 'ViT_pre-trained.pth')
 
+    if epoch_test_loss < best_test_loss:
+        best_test_loss = epoch_test_loss
+        torch.save(vit.state_dict(), 'ViT_pre-trained.pth')
+"""
 liveloss = PlotLosses()
 for n in range(epochs):
     logs = {}
@@ -462,3 +463,4 @@ for n in range(epochs):
 
     liveloss.update(logs)
     liveloss.send()
+"""
